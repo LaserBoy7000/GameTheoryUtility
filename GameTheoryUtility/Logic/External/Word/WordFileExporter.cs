@@ -5,7 +5,7 @@ using GameTheoryUtility.Logic.Game;
 using GameTheoryUtility.Logic.Matrix;
 using GameTheoryUtility.Logic.Solvers;
 using GameTheoryUtility.Logic.Visual;
-using Microsoft.Office.Interop.Word;
+//using Microsoft.Office.Interop.Word;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -171,7 +171,8 @@ class WordFileExporter
     
     void SaveAsPdf(params string[] wordFiles)
     {
-         object misValue = System.Reflection.Missing.Value;
+        throw new Exception("Даний випуск не було побудовано із підтримкою COM Intertop, проведіть локальну компіляцію");
+/*         object misValue = System.Reflection.Missing.Value;
 
         var word = new Application();
 
@@ -202,5 +203,5 @@ class WordFileExporter
                 GC.Collect();
             }
         }
-    }
+*/    }
 }

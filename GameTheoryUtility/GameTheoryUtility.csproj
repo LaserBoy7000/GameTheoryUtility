@@ -27,7 +27,8 @@
     <PackageReference Include="SkiaSharp.Views.WPF" Version="3.119.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
     <PackageReference Include="WpfMath" Version="2.1.0" />
-	<PackageReference Include="ZenLib" Version="3.1.6" />
+    <PackageReference Include="ZenLib" Version="3.1.6" />
+  <!-- Requires local build 
 	<COMReference Include="Microsoft.Office.Interop.Word">
 	  <WrapperTool>tlbimp</WrapperTool>
 	  <VersionMinor>7</VersionMinor>
@@ -37,6 +38,7 @@
 	  <Isolated>false</Isolated>
 	  <EmbedInteropTypes>true</EmbedInteropTypes>
 	</COMReference>
+  -->
   </ItemGroup>
 
   <ItemGroup>
