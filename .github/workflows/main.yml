@@ -1,4 +1,4 @@
-name: Build and Archive WPF App
+name: Build, Publish, and Zip
 
 on:
   push:
@@ -13,25 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Restore NuGet packages
+        run: msbuild GameTheoryUtility.csproj /t:Restore
 
-      - name: Build
-        run: dotnet build --configuration Release
-
-      - name: Publish
-        run: dotnet publish -c Release -o publish
+      - name: Publish with MSBuild
+        run: msbuild GameTheoryUtility.csproj /t:Publish /p:Configuration=Release /p:Platform="Any CPU"
 
       - name: Zip Publish Output
-        run: Compress-Archive -Path publish\* -DestinationPath GameTheoryUtility.zip
+        run: |
+          $publishDir = Get-ChildItem -Directory -Recurse -Filter publish | Select-Object -First 1
+          Compress-Archive -Path "$($publishDir.FullName)\*" -DestinationPath GameTheoryUtility.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GameTheoryUtility
+          name: 'Game Theory Utility'
           path: GameTheoryUtility.zip
