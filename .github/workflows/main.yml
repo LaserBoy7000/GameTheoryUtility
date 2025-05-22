@@ -17,10 +17,10 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Restore NuGet packages
-        run: msbuild GameTheoryUtility.csproj /t:Restore
+        run: msbuild GameTheoryUtility/GameTheoryUtility.csproj /t:Restore
 
       - name: Publish with MSBuild
-        run: msbuild GameTheoryUtility.csproj /t:Publish /p:Configuration=Release /p:Platform="Any CPU"
+        run: msbuild GameTheoryUtility/GameTheoryUtility.csproj /t:Publish /p:Configuration=Release /p:Platform="Any CPU"
 
       - name: Zip Publish Output
         run: |
