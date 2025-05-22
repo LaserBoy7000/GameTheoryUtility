@@ -1,0 +1,173 @@
+﻿<Page x:Class="GameTheoryUtility.Pages.GenerationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GameTheoryUtility.Pages"
+      xmlns:cnv="clr-namespace:GameTheoryUtility.Converters"
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="GenerationPage"
+      x:Name="Page"
+      d:DataContext="{d:DesignInstance local:GenerationViewModel}">
+
+    <Page.Resources>
+        <cnv:BooleanToVisibilityConverter x:Key="InvertedCollapse" True="Collapsed" False="Visible"/>
+        <cnv:BooleanToVisibilityConverter x:Key="Collapse" True="Visible" False="Collapsed"/>
+        <cnv:NullableToVisibilityConverter x:Key="Null" Null="Collapsed" NotNull="Visible"/>
+        <cnv:NullableToVisibilityConverter x:Key="InvertedNull" Null="Visible" NotNull="Collapsed"/>
+        <cnv:BooleanAndConverter x:Key="And"/>
+        <md:InvertBooleanConverter x:Key="Invert"/>
+        <CollectionViewSource x:Key="TemplatesSource" Source="{Binding Templates}"/>
+    </Page.Resources>
+
+    <Grid>
+        <TabControl Padding="5" TabStripPlacement="Bottom">
+            <TabItem Header="Шаблони">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                <TextBlock Margin="0,0,0,10" Style="{StaticResource MaterialDesignHeadline4TextBlock}">Шаблони для створення завдань</TextBlock>
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid VerticalAlignment="Top" Columns="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="local:PracticeViewModel">
+                                <Button MaxWidth="200" MinWidth="100" Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" Padding="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Command="{Binding DataContext.OpenCommand, ElementName=Page}" CommandParameter="{Binding .}" Style="{StaticResource MaterialDesignOutlinedButton}" Margin="4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <md:PackIcon Width="40" Height="40" Grid.RowSpan="2" Visibility="{Binding IsPassiveSecondPlayer, Converter={StaticResource InvertedCollapse}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="HumanMale"/>
+                                        <md:PackIcon Height="40" Width="40" Grid.RowSpan="2" Visibility="{Binding IsPassiveSecondPlayer, Converter={StaticResource Collapse}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="WeatherPouring"/>
+                                        <TextBlock Grid.Column="1" Visibility="{Binding IsIntegerGame, Converter={StaticResource InvertedCollapse}}" HorizontalAlignment="Center">1.234</TextBlock>
+                                        <TextBlock Grid.Column="1" Visibility="{Binding IsIntegerGame, Converter={StaticResource Collapse}}" HorizontalAlignment="Center">1234</TextBlock>
+                                        <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center">
+                                            <TextBlock.Inlines>
+                                                <Run Text="{Binding StrategiesCountA}"/>
+                                                <Run Text="x"/>
+                                                <Run Text="{Binding StrategiesCountB}"/>
+                                            </TextBlock.Inlines>
+                                        </TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Grid.Row="3" Visibility="{Binding NoRepeats, Converter={StaticResource Collapse}}">Унік.</TextBlock>
+                                        <TextBlock HorizontalAlignment="Center" Grid.Row="3" Visibility="{Binding NoRepeats, Converter={StaticResource InvertedCollapse}}">Повт.</TextBlock>
+                                        <md:PackIcon Width="20" Height="20" Grid.Row="2" Visibility="{Binding EnableSaddlePoint, Converter={StaticResource Collapse}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="AccessPointCheck"/>
+                                        <md:PackIcon Height="20" Width="20" Grid.Row="2" Visibility="{Binding EnableSaddlePoint, Converter={StaticResource InvertedCollapse}}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="AccessPointRemove"/>
+                                        <ItemsControl Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" ItemsSource="{Binding AvailableSolvers}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <md:PackIcon Margin="2" Visibility="{Binding IsEnabled, Converter={StaticResource Collapse}}" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="20" Kind="{Binding SolverIcon}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource TemplatesSource}}"/>
+                                <Button MaxWidth="200" MinWidth="100" Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" VerticalAlignment="Stretch" Margin="4" Command="{Binding CreateTemplateCommand}">
+                                    <md:PackIcon Kind="Plus" Width="40" Height="40"/>
+                                </Button>
+                            </CompositeCollection>
+                        </ItemsControl.ItemsSource>
+                    </ItemsControl>
+                </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Варіанти">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock>Кількість варіантів:</TextBlock>
+                    <TextBox Grid.Column="1" Text="{Binding InstancesCount, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ItemsControl Margin="0,20,0,20" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" ItemsSource="{Binding Instances}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Margin="0, 0, 5, 5" Command="{Binding ElementName=Page, Path=DataContext.OpenCommand}" CommandParameter="{Binding Model}">
+                                    <TextBlock>
+                                        <Run>Варіант</Run>
+                                        <Run Text="{Binding Index, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Command="{Binding GenerateInstancesCommand}" Grid.Column="1" Grid.Row="2">Згенерувати</Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Експорт">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="0,0,0,25" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Grid.ColumnSpan="2" HorizontalAlignment="Center">Завдання</TextBlock>
+                    <TextBlock Margin="0,0,0,25" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.Column="2">Відповіді</TextBlock>
+                    <Button Grid.ColumnSpan="2" Command="{Binding ExportAssignmentsCommand}" Grid.Row="99" Margin="5">Експортувати</Button>
+                    <Button Grid.ColumnSpan="2" Command="{Binding ExportSolutionsCommand}" Grid.Row="99" Margin="5" Grid.Column="2">Експортувати</Button>
+                    <TextBlock Grid.Row="1">Включити відповіді</TextBlock>
+                    <CheckBox Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="1"/>
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Grid.Row="1">Включити завдання</TextBlock>
+                    <CheckBox Grid.Column="3" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="1"/>
+                    <TextBlock Grid.Row="2">Розбити на файли</TextBlock>
+                    <CheckBox Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="2"/>
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Grid.Row="2">Розбити на файли</TextBlock>
+                    <CheckBox Grid.Column="3" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="2"/>
+                    <TextBlock Grid.Row="3">
+                        <Run>Зберегти як .pdf</Run>
+                        <md:PackIcon Margin="10,0,0,0" ToolTip="Вимагає аби Microsoft Word було встановлено на комп'ютері" Kind="AlertCircle"/>
+                    </TextBlock>
+                    <CheckBox Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="3"/>
+                    <TextBlock Grid.Row="3" Grid.Column="2">
+                      <Run>Зберегти як .pdf</Run>
+                      <md:PackIcon Margin="10,0,0,0" ToolTip="Вимагає аби Microsoft Word було встановлено на комп'ютері" Kind="AlertCircle"/> 
+                    </TextBlock>    
+                    <CheckBox Grid.Column="3" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="3"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

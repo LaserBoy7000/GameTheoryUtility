@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="Google.OrTools" Version="9.12.4544" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.Views.WPF" Version="3.119.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+    <PackageReference Include="WpfMath" Version="2.1.0" />
+	<PackageReference Include="ZenLib" Version="3.1.6" />
+	<COMReference Include="Microsoft.Office.Interop.Word">
+	  <WrapperTool>tlbimp</WrapperTool>
+	  <VersionMinor>7</VersionMinor>
+	  <VersionMajor>8</VersionMajor>
+	  <Guid>00020905-0000-0000-c000-000000000046</Guid>
+	  <Lcid>0</Lcid>
+	  <Isolated>false</Isolated>
+	  <EmbedInteropTypes>true</EmbedInteropTypes>
+	</COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="Resources\splash.png" />
+  </ItemGroup>
+
+</Project>

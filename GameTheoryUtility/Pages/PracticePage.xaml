@@ -1,0 +1,176 @@
+﻿<Page x:Class="GameTheoryUtility.Pages.PracticePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:cnv="clr-namespace:GameTheoryUtility.Converters"
+      xmlns:cnt="clr-namespace:GameTheoryUtility.Controls"
+      xmlns:local="clr-namespace:GameTheoryUtility.Pages"
+      mc:Ignorable="d" 
+      d:DataContext="{d:DesignInstance local:PracticeViewModel}"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="PracticePage">
+
+    <Page.Resources>
+        <cnv:BooleanToVisibilityConverter x:Key="InvertedCollapse" True="Collapsed" False="Visible"/>
+        <cnv:BooleanToVisibilityConverter x:Key="Collapse" True="Visible" False="Collapsed"/>
+        <cnv:NullableToVisibilityConverter x:Key="Null" Null="Collapsed" NotNull="Visible"/>
+        <cnv:NullableToVisibilityConverter x:Key="InvertedNull" Null="Visible" NotNull="Collapsed"/>
+        <cnv:BooleanAndConverter x:Key="And"/>
+        <md:InvertBooleanConverter x:Key="Invert"/>
+    </Page.Resources>
+
+    <Grid>
+        <TabControl TabStripPlacement="Bottom">
+            <TabItem Header="Задача">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="90"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center">Цілочислова гра</TextBlock>
+                        <CheckBox VerticalAlignment="Center" Grid.Column="1" IsChecked="{Binding IsIntegerGame}" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="1">Гра проти природи</TextBlock>
+                        <CheckBox VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsPassiveSecondPlayer}" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="2">Кількість стратегій гравця A</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Text="{Binding StrategiesCountA, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="3" >Кількість стратегій гравця B</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="3"  Grid.Column="1" Text="{Binding StrategiesCountB, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="4">Відображені десяткові знаки</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding IsIntegerGame, Converter={StaticResource Invert}}" Grid.Row="4" Grid.Column="1" Text="{Binding DecimalPrecision, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="5">Автоматична генерація гри</TextBlock>
+                        <CheckBox IsChecked="{Binding AreGenerationParametersEnabled}" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
+                    </Grid>
+                    <Grid Visibility="{Binding AreGenerationParametersEnabled, Converter={StaticResource Collapse}}" Grid.Row="1" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="90"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center">Максимальне значення клітинки</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Text="{Binding MaxCellValue}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="1">Мінімальне значення клітинки</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Text="{Binding MinCellValue}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="2">З сідловою точкою</TextBlock>
+                        <CheckBox Width="40" x:Name="SaddlePoint" Style="{StaticResource MaterialDesignSwitchToggleButton}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" IsChecked="{Binding EnableSaddlePoint}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Column="2">Бажана сідлова точка</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" VerticalAlignment="Center" Grid.Column="3" Text="{Binding DesirableSaddlePoint}">
+                            <TextBox.IsEnabled>
+                                <MultiBinding Converter="{StaticResource And}">
+                                    <Binding ElementName="SaddlePoint" Path="IsChecked"/>
+                                    <Binding ElementName="UniqueValues" Converter="{StaticResource Invert}" Path="IsChecked"/>
+                                </MultiBinding>
+                            </TextBox.IsEnabled>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="1" Grid.Column="2">Унікальні знічення</TextBlock>
+                        <CheckBox Width="40" x:Name="UniqueValues" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}" Grid.Row="1" IsEnabled="{Binding IsIntegerGame}" VerticalAlignment="Center" Grid.Column="3" IsChecked="{Binding NoRepeats}"/>
+                        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="2">Зерно генератора</TextBlock>
+                        <TextBox Width="40" TextAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Grid.Column="3" Text="{Binding GeneratorSeed}"/>
+                        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Command="{Binding GenerateMatrixCommand}">Згенерувати</Button>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <cnt:MatrixControl Margin="8" Grid.Column="1" DataContext="{Binding Matrix}"/>
+                        <Rectangle Fill="{DynamicResource MaterialDesign.Brush.Primary}" Width="3"  Margin="0,25,0,25" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
+                        <Rectangle Fill="{DynamicResource MaterialDesign.Brush.Primary}" Grid.Column="1" Margin="25,0,25,0" VerticalAlignment="Bottom" Height="3" HorizontalAlignment="Stretch"/>
+                        <Grid>
+                            <md:PackIcon VerticalAlignment="Center" Width="80" Height="80" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="HumanMale"/>
+                            <TextBlock Foreground="White" Padding="0,0,0,10" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">A</TextBlock>
+                        </Grid>
+                        <Grid Visibility="{Binding IsPassiveSecondPlayer, Converter={StaticResource InvertedCollapse}}" Grid.Row="1" Grid.Column="1">
+                            <Rectangle Width="3" VerticalAlignment="Center" Height="90" HorizontalAlignment="Left"/>
+                            <md:PackIcon HorizontalAlignment="Center" VerticalAlignment="Center" Width="80" Height="80"  Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="HumanMale"/>
+                            <TextBlock Padding="0,0,0,10" FontWeight="Bold" Foreground="White" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center" Text="B"/>
+                            <Grid.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </Grid.LayoutTransform>
+                        </Grid>
+                        <md:PackIcon Grid.Column="1" Grid.Row="1" Visibility="{Binding IsPassiveSecondPlayer, Converter={StaticResource Collapse}}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,30" Width="50" Height="50"  Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Kind="WeatherPouring"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Обчислення">
+                <ItemsControl ItemsSource="{Binding AvailableSolvers}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Margin="0,0,3,0" VerticalAlignment="Center" IsEnabled="{Binding IsApplicable}" IsChecked="{Binding IsEnabled}"/>
+                                <TextBlock VerticalAlignment="Center" Grid.Column="1" Style="{StaticResource MaterialDesignCaptionTextBlock}"  Text="{Binding Solver.Name}"/>
+                                <ItemsControl Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding IsApplicable, Converter={StaticResource Collapse}}" Margin="20,3,0,8" ItemsSource="{Binding Options}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox VerticalAlignment="Center" Margin="0,0,3,0" IsChecked="{Binding IsEnabled}"/>
+                                                <TextBlock VerticalAlignment="Center" Grid.Column="1" Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Name}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </TabItem>
+            <TabItem Visibility="{Binding EnableSolution, Converter={StaticResource Collapse}}" Header="Результат">
+                <Grid>
+                    <Button Visibility="{Binding ComputationInstance, Converter={StaticResource InvertedNull}}" Command="{Binding ComputeCommand}" VerticalAlignment="Center" HorizontalAlignment="Center">Обчислити</Button>
+                    <local:SolutionPage Visibility="{Binding ComputationInstance, Converter={StaticResource Null}}" Steps="{Binding ComputationInstance.ComputationSteps}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
