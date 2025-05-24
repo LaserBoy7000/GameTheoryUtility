@@ -25,7 +25,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Publish
-        run: dotnet publish -c Release -o publish
+        run: dotnet publish -c Release -r win-x64 --self-contained true -o publish
 
       - name: Zip Publish Output
         run: Compress-Archive -Path publish\* -DestinationPath GameTheoryUtilities.zip
